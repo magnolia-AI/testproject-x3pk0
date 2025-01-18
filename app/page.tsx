@@ -2,6 +2,8 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { useToast } from "@/hooks/use-toast"
+import { Cart } from '@/components/cart'
+import { useState } from 'react'
 // Mock product data
 const products = [
   {
@@ -33,16 +35,60 @@ const products = [
     description: "Modern interpretation of human form in clay"
   }
 ]
+interface CartItem {
+  id: number
+  name: string
+  price: number
+  quantity: number
+  image: string
+}
 export default function Home() {
   const { toast } = useToast()
-  const handleAddToCart = (productName: string) => {
-    toast({
-      title: "Added to Cart",
-      description: `${productName} has been added to your cart.`
+  const [cartItems, setCartItems] = useState<CartItem[]>([])
+  const handleAddToCart = (product: typeof products[0]) => {
+    setCartItems(current => {
+      const existingItem = current.find(item => item.id === product.id)
+      if (existingItem) {
+        return current.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      }
+      return [...current, { ...product, quantity: 1 }]
     })
+        toast({
+      title: "Added to Cart",
+      description: `${product.name} has been added to your cart.`
+    })
+  }
+  const handleRemoveFromCart = (id: number) => {
+    setCartItems(current => current.filter(item => item.id !== id))
+  }
+  const handleUpdateQuantity = (id: number, quantity: number) => {
+    if (quantity === 0) {
+      handleRemoveFromCart(id)
+      return
+    }
+    setCartItems(current =>
+      current.map(item =>
+        item.id === id ? { ...item, quantity } : item
+      )
+    )
   }
   return (
     <main className="min-h-screen bg-background">
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+          <h1 className="text-xl font-bold">Clay Gallery</h1>
+          <Cart 
+            items={cartItems}
+            onRemove={handleRemoveFromCart}
+            onUpdateQuantity={handleUpdateQuantity}
+          />
+        </div>
+      </nav>
       {/* Hero Section */}
       <section className="container mx-auto px-4 pt-32 pb-24">
         <div className="max-w-[800px] mx-auto text-center">
@@ -74,7 +120,7 @@ export default function Home() {
               <CardFooter>
                 <Button 
                   className="w-full"
-                  onClick={() => handleAddToCart(product.name)}
+                  onClick={() => handleAddToCart(product)}
                 >
                   Add to Cart
                 </Button>
