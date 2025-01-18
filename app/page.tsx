@@ -1,72 +1,122 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import { useToast } from "@/hooks/use-toast"
+// Mock product data
+const products = [
+  {
+    id: 1,
+    name: "Abstract Wave Sculpture",
+    price: 129.99,
+    image: "https://images.unsplash.com/photo-1565378435245-4282cbda75c9?w=500&h=500&fit=crop",
+    description: "Hand-crafted abstract wave pattern in earthen tones"
+  },
+  {
+    id: 2,
+    name: "Modern Face Sculpture",
+    price: 159.99,
+    image: "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=500&h=500&fit=crop",
+    description: "Contemporary facial sculpture with minimalist design"
+  },
+  {
+    id: 3,
+    name: "Nature-Inspired Bowl",
+    price: 89.99,
+    image: "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=500&h=500&fit=crop",
+    description: "Organic-shaped decorative bowl with leaf patterns"
+  },
+  {
+    id: 4,
+    name: "Abstract Figure",
+    price: 199.99,
+    image: "https://images.unsplash.com/photo-1565378435245-4282cbda75c9?w=500&h=500&fit=crop",
+    description: "Modern interpretation of human form in clay"
+  }
+]
 export default function Home() {
+  const { toast } = useToast()
+  const handleAddToCart = (productName: string) => {
+    toast({
+      title: "Added to Cart",
+      description: `${productName} has been added to your cart.`
+    })
+  }
   return (
     <main className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="container mx-auto px-4 pt-32 pb-24">
         <div className="max-w-[800px] mx-auto text-center">
           <h1 className="text-5xl font-bold tracking-tight lg:text-6xl bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-            Your Vision Starts Here
+            Artisanal Clay Sculptures
           </h1>
           <p className="mt-6 text-xl text-muted-foreground max-w-[600px] mx-auto">
-            Transform this template into your perfect website using the chat interface.
+            Discover unique handcrafted clay sculptures that bring artistry to your space
           </p>
-          <div className="mt-12 flex gap-4 justify-center">
-            <Button size="lg" className="px-8">Primary Action</Button>
-            <Button size="lg" variant="outline" className="px-8">Secondary</Button>
-          </div>
         </div>
       </section>
-      {/* Content Section */}
+      {/* Product Grid */}
+      <section className="container mx-auto px-4 py-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {products.map((product) => (
+            <Card key={product.id} className="overflow-hidden">
+              <div className="aspect-square relative">
+                <img 
+                  src={product.image} 
+                  alt={product.name}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+              <CardContent className="pt-6">
+                <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
+                <p className="text-muted-foreground mb-2">{product.description}</p>
+                <p className="text-lg font-bold">${product.price}</p>
+              </CardContent>
+              <CardFooter>
+                <Button 
+                  className="w-full"
+                  onClick={() => handleAddToCart(product.name)}
+                >
+                  Add to Cart
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </section>
+      {/* Features Section */}
       <section className="container mx-auto px-4 py-24 bg-muted/30">
         <div className="grid md:grid-cols-3 gap-8 max-w-[1200px] mx-auto">
           <Card className="bg-background border-none shadow-md hover:shadow-lg transition-shadow">
             <CardContent className="pt-6">
-              <h3 className="text-xl font-semibold mb-3">Feature One</h3>
+              <h3 className="text-xl font-semibold mb-3">Handcrafted Quality</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Describe your first key feature or service here. Make it compelling and clear.
+                Each piece is carefully crafted by skilled artisans with attention to detail.
               </p>
             </CardContent>
           </Card>
           <Card className="bg-background border-none shadow-md hover:shadow-lg transition-shadow">
             <CardContent className="pt-6">
-              <h3 className="text-xl font-semibold mb-3">Feature Two</h3>
+              <h3 className="text-xl font-semibold mb-3">Unique Designs</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Highlight another important aspect of your business or project here.
+                Every sculpture is one-of-a-kind, ensuring you own a truly unique piece.
               </p>
             </CardContent>
           </Card>
           <Card className="bg-background border-none shadow-md hover:shadow-lg transition-shadow">
             <CardContent className="pt-6">
-              <h3 className="text-xl font-semibold mb-3">Feature Three</h3>
+              <h3 className="text-xl font-semibold mb-3">Secure Shipping</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Add a third compelling feature or benefit that sets you apart.
+                Carefully packed and shipped to ensure your sculpture arrives safely.
               </p>
             </CardContent>
           </Card>
-        </div>
-      </section>
-      {/* Additional Content Section */}
-      <section className="container mx-auto px-4 py-24">
-        <div className="max-w-[800px] mx-auto text-center">
-          <h2 className="text-3xl font-bold tracking-tight mb-6">
-            Ready to Get Started?
-          </h2>
-          <p className="text-muted-foreground mb-8">
-            Use the chat interface to customize this template. Add your content, change colors, or modify the layout.
-          </p>
-          <Button variant="outline" className="px-8">
-            Call to Action
-          </Button>
         </div>
       </section>
       {/* Footer */}
       <footer className="border-t">
         <div className="container mx-auto px-4 h-16 flex items-center justify-center">
           <p className="text-sm text-muted-foreground">
-            © 2024 Your Brand. All rights reserved.
+            © 2024 Clay Sculpture Gallery. All rights reserved.
           </p>
         </div>
       </footer>
